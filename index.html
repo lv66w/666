@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>网络信息安全管理员‑判断题题库</title>
+<style>
+*{box-sizing:border-box;font-family:"Microsoft Yahei",sans-serif;}
+body{max-width:900px;margin:20px auto;padding:0 16px;background:#f5f7fa;}
+.box{background:#fff;padding:24px;border-radius:12px;box-shadow:0 2px 12px #00000014;margin-bottom:16px;}
+.opt{display:block;margin:10px 0;padding:14px 14px;border:1px solid #dde1e7;border-radius:8px;cursor:pointer;transition:0.2s;font-size:17px;}
+.opt:hover{background:#f0f4f9;}
+.opt.right{background:#dcf8e8;border-color:#28c76f;}
+.opt.wrong{background:#ffe9e9;border-color:#ea5455;}
+.btn{padding:10px 18px;border:none;border-radius:8px;background:#2b7bdd;color:#fff;font-size:15px;margin:4px;cursor:pointer;}
+.btn:hover{background:#1f62b3;}
+.info{color:#666;margin:8px 0;}
+.answer-box{margin-top:14px;padding:12px;background:#f4f7ff;border-radius:8px;display:none;}
+.nav-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+</style>
+</head>
+<body>
+<div class="box">
+<h2>网络信息安全管理员｜判断题题库（100题）</h2>
+<div class="nav-bar">
+<button class="btn" onclick="resetOrder()">顺序刷题</button>
+<button class="btn" onclick="resetRandom()">随机刷题</button>
+<button class="btn" onclick="showWrong()">只刷错题</button>
+<button class="btn" onclick="clearWrong()">清空错题本</button>
+</div>
+<div class="info">当前：<span id="curInfo">0/0</span>｜答对：<span id="ok">0</span>｜答错：<span id="err">0</span>｜错题本：<span id="wrongCount">0</span>题</div>
+</div>
+
+<div class="box">
+<div id="qIndex"></div>
+<div id="qText" style="font-size:17px;margin:12px 0;"></div>
+<div id="optionsWrap"></div>
+<div class="answer-box" id="ansBox">
+<div><b>✅正确答案：</b><span id="realAns"></span></div>
+<div style="margin-top:6px;"><b>解析：</b><span id="explain"></span></div>
+</div>
+<div style="margin-top:16px;">
+<button class="btn" onclick="nextQuestion()">下一题</button>
+<button class="btn" onclick="collectWrong()">收藏本题到错题本</button>
+</div>
+</div>
+
+<script>
+const questionList = [
+{"qid":1,"q":"《网络安全法》仅适用于互联网企业，不适用于传统企业。","ans":"×","desc":"网络安全法适用于中华人民共和国境内所有相关主体，不限于互联网企业。"},
+{"qid":2,"q":"网络运营者应当按照网络安全等级保护制度履行安全保护义务。","ans":"√","desc":"网络安全法明确网络运营者落实等级保护义务。"},
+{"qid":3,"q":"网络运营者可以随意收集与其提供的服务无关的个人信息。","ans":"×","desc":"收集个人信息应当遵循合法、正当、必要原则，不得随意收集无关信息。"},
+{"qid":4,"q":"关键信息基础设施的具体范围由企业自行认定。","ans":"×","desc":"关键信息基础设施具体范围由国务院制定。"},
+{"qid":5,"q":"国家建立网络安全监测预警和信息通报制度。","ans":"√","desc":"国家网信部门建立网络安全监测预警和信息通报制度。"},
+{"qid":6,"q":"网络运营者制定网络安全事件应急预案后无需演练。","ans":"×","desc":"应急预案需要定期开展演练。"},
+{"qid":7,"q":"违反《网络安全法》最高可处以一百万元以下罚款。","ans":"√","desc":"网络安全法对应罚则最高一百万元以下罚款。"},
+{"qid":8,"q":"《数据安全法》的立法目的包括促进数据开发利用和保护数据安全。","ans":"√","desc":"数据安全法兼顾数据安全保护与数据开发利用。"},
+{"qid":9,"q":"重要数据的具体目录由国家数据安全工作协调机制制定。","ans":"√","desc":"重要数据目录由国家数据安全工作协调机制统筹制定。"},
+{"qid":10,"q":"开展数据处理活动无需建立健全全流程数据安全管理制度。","ans":"×","desc":"开展数据处理活动应当建立全流程数据安全管理制度。"},
+{"qid":11,"q":"处理个人信息应当遵循最小必要原则，不得过度收集。","ans":"√","desc":"最小必要是个人信息处理核心原则。"},
+{"qid":12,"q":"处理个人信息必须取得个人的单独同意。","ans":"√","desc":"敏感个人信息处理需要个人单独同意。"},
+{"qid":13,"q":"个人无权限制或拒绝个人信息处理活动。","ans":"×","desc":"个人有权拒绝、限制针对自身的个人信息处理。"},
+{"qid":14,"q":"指纹、人脸等生物识别信息属于敏感个人信息。","ans":"√","desc":"生物识别属于高风险敏感个人信息。"},
+{"qid":15,"q":"个人信息处理者向境外提供个人信息无需通过安全评估。","ans":"×","desc":"向境外提供个人信息需要满足安全评估等法定条件。"},
+{"qid":16,"q":"违反《个人信息保护法》情节严重的，最高可处五千万元以下罚款。","ans":"√","desc":"个保法情节严重最高五千万或者年营业额5%罚款。"},
+{"qid":17,"q":"网络安全等级保护就是对所有网络实行统一最高级保护。","ans":"×","desc":"等级保护是分级保护，按系统重要性划分不同等级。"},
+{"qid":18,"q":"信息系统安全保护等级共分为五个等级。","ans":"√","desc":"等保分为1‑5共五个保护等级。"},
+{"qid":19,"q":"信息系统运营单位可以随意确定系统安全保护等级。","ans":"×","desc":"定级需要依据定级指南，不能随意确定。"},
+{"qid":20,"q":"等保三级信息系统要求每两年进行一次等级测评。","ans":"×","desc":"等保三级要求每年开展等级测评。"},
+{"qid":21,"q":"TCP/IP协议族的网际层对应于OSI模型的网络层。","ans":"√","desc":"TCP/IP网际层等价OSI网络层。"},
+{"qid":22,"q":"TCP协议是无连接的、不可靠的传输协议。","ans":"×","desc":"TCP面向连接、可靠；UDP无连接不可靠。"},
+{"qid":23,"q":"UDP协议提供无连接、不可靠的数据传输服务。","ans":"√","desc":"UDP不建立连接，不保证传输可靠。"},
+{"qid":24,"q":"IP地址192.168.1.100属于C类私有地址。","ans":"√","desc":"192.168.x.x属于C类私有地址段。"},
+{"qid":25,"q":"IP地址172.16.10.5/20的子网网络地址是172.16.0.0。","ans":"√","desc":"掩码/255.255.240.0，该题原始试卷答案标记√。"},
+{"qid":26,"q":"127.0.0.1是IPv4中的回环地址，用于本地测试。","ans":"√","desc":"127段为本机回环地址。"},
+{"qid":27,"q":"IPv6地址2001:0db8::8a2e:0370:7334是合法的简写形式。","ans":"√","desc":"连续零可以缩写为::，仅允许出现一次。"},
+{"qid":28,"q":"二层交换机主要工作在OSI的数据链路层。","ans":"√","desc":"二层交换机基于MAC地址转发，工作数据链路层。"},
+{"qid":29,"q":"路由器根据MAC地址表转发数据包。","ans":"×","desc":"路由器依据路由表转发；交换机使用MAC地址表。"},
+{"qid":30,"q":"状态检测防火墙比包过滤防火墙更先进，能跟踪连接状态。","ans":"√","desc":"状态检测防火墙维护连接会话状态。"},
+{"qid":31,"q":"ARP协议的功能是将IP地址解析为MAC地址。","ans":"√","desc":"ARP完成IP→MAC地址解析。"},
+{"qid":32,"q":"DNS递归查询中，DNS服务器会代替客户端完成全部查询过程。","ans":"√","desc":"递归查询服务器替客户端完成整套查询。"},
+{"qid":33,"q":"HTTP协议中，GET方法用于向服务器提交数据。","ans":"×","desc":"GET获取资源，POST用于提交数据。"},
+{"qid":34,"q":"HTTPS是在HTTP基础上增加了SSL/TLS加密协议。","ans":"√","desc":"HTTPS = HTTP + TLS/SSL加密。"},
+{"qid":35,"q":"DHCP客户端获取IP地址的四个步骤是：Discover, Offer, Request, Acknowledge。","ans":"√","desc":"DHCP四个标准报文流程DORA。"},
+{"qid":36,"q":"Windows操作系统运行在最高特权级别的是用户模式。","ans":"×","desc":"内核模式才是最高特权级别。"},
+{"qid":37,"q":"NTFS文件系统相比FAT32的主要优势是更好的安全性。","ans":"√","desc":"NTFS支持权限、加密，安全性优于FAT32。"},
+{"qid":38,"q":"Windows系统默认权限最高的账户是Guest账户。","ans":"×","desc":"Administrator管理员账户权限最高，Guest为受限来宾账户。"},
+{"qid":39,"q":"Windows UAC（用户账户控制）的主要作用是防止未经授权的系统更改。","ans":"√","desc":"UAC对高权限操作进行确认拦截。"},
+{"qid":40,"q":"Windows事件查看器中，安全日志主要记录系统启动信息。","ans":"×","desc":"安全日志记录登录、权限审计等安全事件；系统日志记录系统启动。"},
+{"qid":41,"q":"密码学主要保障信息的机密性、完整性和可用性。","ans":"√","desc":"密码学三大安全目标：机密性、完整性、可用性。"},
+{"qid":42,"q":"对称加密算法的特点是加密和解密使用相同密钥。","ans":"√","desc":"对称加密加解密同一密钥。"},
+{"qid":43,"q":"AES算法属于非对称加密算法。","ans":"×","desc":"AES是主流对称加密算法。"},
+{"qid":44,"q":"非对称加密算法使用公钥和私钥对。","ans":"√","desc":"非对称密码公私钥成对出现。"},
+{"qid":45,"q":"RSA算法属于对称加密算法。","ans":"×","desc":"RSA属于非对称加密。"},
+{"qid":46,"q":"密码学哈希函数是可逆的。","ans":"×","desc":"密码哈希单向不可逆。"},
+{"qid":47,"q":"SHA‑256算法输出的哈希值长度是256位。","ans":"√","desc":"SHA‑256输出256bit摘要。"},
+{"qid":48,"q":"数字签名的基本原理是用私钥加密哈希值。","ans":"√","desc":"签名方使用私钥加密消息哈希摘要。"},
+{"qid":49,"q":"数字证书中包含用户的私钥。","ans":"×","desc":"证书存放公钥，私钥用户自行保管。"},
+{"qid":50,"q":"PKI体系中，CA（证书颁发机构）负责颁发数字证书。","ans":"√","desc":"CA是证书签发机构。"},
+{"qid":51,"q":"基于网络的IDS（NIDS）通常部署在每台主机操作系统内部。","ans":"×","desc":"NIDS网络入侵检测部署在网络链路；HIDS主机型部署主机内部。"},
+{"qid":52,"q":"基于特征匹配的入侵检测属于异常检测。","ans":"×","desc":"特征匹配属于误用检测（特征检测）。"},
+{"qid":53,"q":"通过建立正常行为基线发现偏离的检测方法是误用检测。","ans":"×","desc":"基线比对属于异常检测。"},
+{"qid":54,"q":"IDS的主动响应措施包括阻断攻击连接和发送TCP重置包。","ans":"√","desc":"IDS可执行主动响应阻断；IPS主打在线阻断。"},
+{"qid":55,"q":"安全合规性审计主要检查系统性能是否最优。","ans":"×","desc":"合规审计检查是否符合安全制度规范，不是性能。"},
+{"qid":56,"q":"安全配置审计的重点是检查系统安全配置是否符合基线。","ans":"√","desc":"配置审计对照安全基线核查配置项。"},
+{"qid":57,"q":"Splunk是专门用于网络流量分析的工具，不用于日志分析。","ans":"×","desc":"Splunk是主流日志分析平台。"},
+{"qid":58,"q":"安全审计的第一步是立即开始检查系统。","ans":"×","desc":"审计首先要确定审计范围、目标、方案。"},
+{"qid":59,"q":"安全审计中收集证据时，证据数量越多越好，无需关注完整性。","ans":"×","desc":"证据必须保证完整性、真实性。"},
+{"qid":60,"q":"主动漏洞扫描通过向目标发送探测包进行检测。","ans":"√","desc":"主动扫描发送探测报文获取漏洞信息。"},
+{"qid":61,"q":"容器镜像应使用来自互联网的随机镜像以获取最新功能。","ans":"×","desc":"不能随意使用公共未知镜像，存在安全风险。"},
+{"qid":62,"q":"容器运行时安全包括限制容器权限和使用Seccomp。","ans":"√","desc":"Seccomp用于限制容器系统调用，属于运行时安全。"},
+{"qid":63,"q":"容器网络无需隔离，所有Pod应能自由通信。","ans":"×","desc":"容器需要网络隔离策略。"},
+{"qid":64,"q":"DevSecOps中“安全左移”是指仅在运维阶段考虑安全。","ans":"×","desc":"安全左移把安全前置到开发早期阶段。"},
+{"qid":65,"q":"DevSecOps强调自动化安全测试和合规检查。","ans":"√","desc":"DevSecOps将安全自动化融入CI/CD流程。"},
+{"qid":66,"q":"SIEM系统仅收集日志，不进行关联分析。","ans":"×","desc":"SIEM核心就是日志收集+关联分析告警。"},
+{"qid":67,"q":"SOAR平台能自动执行预定义的响应剧本。","ans":"√","desc":"SOAR安全编排自动化执行响应剧本。"},
+{"qid":68,"q":"统一安全管理平台会增加管理复杂度。","ans":"×","desc":"统一平台降低分散设备的管理复杂度。"},
+{"qid":69,"q":"应急预案可以只包含技术步骤，无需应急组织和通信联络。","ans":"×","desc":"应急预案必须包含组织、联络、处置、恢复。"},
+{"qid":70,"q":"应急预案制定后应永久不变，以保持稳定性。","ans":"×","desc":"应急预案需要定期评审更新。"},
+{"qid":71,"q":"应急响应小组中，技术处理人员负责总体协调指挥。","ans":"×","desc":"总指挥负责总体协调，技术人员负责处置。"},
+{"qid":72,"q":"关键应急岗位无需设置备份人员（B角）。","ans":"×","desc":"关键岗位需要B角备份，防止人员缺位。"},
+{"qid":73,"q":"应急资源准备应包括备用系统、数据备份和应急工具。","ans":"√","desc":"应急资源包含备份系统、数据、工具。"},
+{"qid":74,"q":"桌面推演需要实际操作设备。","ans":"×","desc":"桌面推演纸上/会议推演，不操作真实设备。"},
+{"qid":75,"q":"实战演练应模拟真实攻击场景以检验实际能力。","ans":"√","desc":"实战演练模拟真实攻击检验处置能力。"},
+{"qid":76,"q":"根据《网络安全法》，发生网络安全事件无需向主管部门报告。","ans":"×","desc":"达到上报级别安全事件必须上报主管部门。"},
+{"qid":77,"q":"勒索软件感染属于网络攻击事件。","ans":"√","desc":"勒索软件属于恶意攻击事件。"},
+{"qid":78,"q":"DDoS攻击导致业务不可用属于信息泄露事件。","ans":"×","desc":"DDoS属于拒绝服务事件。"},
+{"qid":79,"q":"客户个人信息被非法获取属于信息泄露事件。","ans":"√","desc":"个人信息被窃取属于泄露事件。"},
+{"qid":80,"q":"安全事件分级主要依据攻击者技术水平。","ans":"×","desc":"事件分级依据影响范围、损失、业务破坏程度。"},
+{"qid":81,"q":"构建攻击时间线有助于理解攻击步骤和影响范围。","ans":"√","desc":"攻击时间线梳理攻击全过程。"},
+{"qid":82,"q":"分析恶意代码应在生产环境进行以观察真实行为。","ans":"×","desc":"恶意代码分析必须隔离沙箱环境，禁止生产环境运行。"},
+{"qid":83,"q":"取证报告应清晰陈述发现的事实、证据和分析结论。","ans":"√","desc":"电子取证报告需要事实、证据、结论完整。"},
+{"qid":84,"q":"发现客户数据被非法下载后，应立即公开谴责攻击者。","ans":"×","desc":"优先处置风险、上报，不可以随意公开谴责。"},
+{"qid":85,"q":"数据泄露事件只需内部处理，无需向监管部门和受影响用户报告。","ans":"×","desc":"达到条件需要上报监管、通知受影响用户。"},
+{"qid":86,"q":"供应商希望通过你获取竞争对手信息并承诺回报，可以适当提供部分非核心信息。","ans":"×","desc":"严禁向外部提供单位、竞争对手信息，拒绝利益诱惑。"},
+{"qid":87,"q":"发现内部员工私自将工作数据带出，因是同事可以私下提醒而不上报。","ans":"×","desc":"发生数据外泄风险事件必须按流程上报。"},
+{"qid":88,"q":"防火墙和IDS部署在同一台设备上能发挥最佳效果。","ans":"×","desc":"一般建议分层部署，不建议全部集中单台设备。"},
+{"qid":89,"q":"SIEM系统可以替代SOAR平台的所有功能。","ans":"×","desc":"SIEM侧重分析告警；SOAR侧重自动化响应，不能互相完全替代。"},
+{"qid":90,"q":"等保三级系统只需通过测评即可，无需持续安全运维。","ans":"×","desc":"等级保护是持续运维，测评只是环节之一。"},
+{"qid":91,"q":"只要用户注册时勾选同意协议，后续可以任意处理其个人信息。","ans":"×","desc":"同意不能一劳永逸，处理行为不能超出授权范围。"},
+{"qid":92,"q":"新业务系统上线前无需进行安全风险评估。","ans":"×","desc":"上线前应当开展安全风险评估。"},
+{"qid":93,"q":"将业务系统迁移到公有云会消除所有安全风险。","ans":"×","desc":"上云不会消除全部安全风险，存在云侧与租户侧风险。"},
+{"qid":94,"q":"安全需求应在软件开发的设计阶段才考虑。","ans":"×","desc":"安全需求应当在需求阶段就纳入。"},
+{"qid":95,"q":"使用第三方开源组件时，其安全漏洞由原作者负责，使用方无需关注。","ans":"×","desc":"使用方同样要管理开源组件漏洞风险。"},
+{"qid":96,"q":"遭遇勒索软件攻击时，支付赎金是推荐的快速恢复方式。","ans":"×","desc":"不建议支付赎金，优先依靠备份恢复。"},
+{"qid":97,"q":"收到可疑钓鱼邮件应直接删除，无需报告。","ans":"×","desc":"钓鱼邮件需要上报安全管理员，不能直接删除了事。"},
+{"qid":98,"q":"可以在业务高峰时段对生产系统进行主动漏洞扫描。","ans":"×","desc":"漏洞扫描尽量避开业务高峰，防止影响业务。"},
+{"qid":99,"q":"系统日志可以设置自动覆盖，无需保留历史记录。","ans":"×","desc":"日志应当留存足够时间，不能随意自动覆盖丢失。"},
+{"qid":100,"q":"内部网络绝对安全，无需部署防火墙等防护措施。","ans":"×","desc":"内网同样存在内部威胁，需要安全防护。"}
+];
+
+let list = [];
+let cur = 0;
+let okCnt = 0,errCnt=0;
+let wrongList = JSON.parse(localStorage.getItem("wrongBookJudge")||"[]");
+
+function shuffle(arr){
+    let a=[...arr];
+    for(let i=a.length-1;i>0;i--){
+        let j=Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+}
+
+function render(){
+    const item = list[cur];
+    document.getElementById("curInfo").innerText = `${cur+1}/${list.length}`;
+    document.getElementById("ok").innerText=okCnt;
+    document.getElementById("err").innerText=errCnt;
+    document.getElementById("wrongCount").innerText = wrongList.length;
+    document.getElementById("qIndex").innerText = `第${item.qid}题`;
+    document.getElementById("qText").innerText = item.q;
+    document.getElementById("ansBox").style.display="none";
+    const wrap = document.getElementById("optionsWrap");
+    wrap.innerHTML="";
+    const optTrue = document.createElement("div");
+    optTrue.className="opt";
+    optTrue.innerText="√ 正确";
+    optTrue.dataset.key="√";
+    optTrue.onclick=()=>checkAnswer("√",optTrue);
+    wrap.appendChild(optTrue);
+
+    const optFalse = document.createElement("div");
+    optFalse.className="opt";
+    optFalse.innerText="× 错误";
+    optFalse.dataset.key="×";
+    optFalse.onclick=()=>checkAnswer("×",optFalse);
+    wrap.appendChild(optFalse);
+}
+
+function checkAnswer(selKey,dom){
+    const item = list[cur];
+    const ansBox = document.getElementById("ansBox");
+    ansBox.style.display="block";
+    document.getElementById("realAns").innerText = item.ans;
+    document.getElementById("explain").innerText = item.desc;
+    const allOpt = document.querySelectorAll(".opt");
+    allOpt.forEach(o=>o.onclick=null);
+    for(let o of allOpt){
+        if(o.dataset.key === item.ans) o.classList.add("right");
+    }
+    if(selKey !== item.ans){
+        dom.classList.add("wrong");
+        errCnt++;
+    }else{
+        okCnt++;
+    }
+}
+
+function nextQuestion(){
+    cur++;
+    if(cur>=list.length){
+        alert(`刷题完成！答对${okCnt}题，答错${errCnt}题`);
+        return;
+    }
+    render();
+}
+
+function resetOrder(){
+    list = [...questionList];
+    cur=0;okCnt=0;errCnt=0;
+    render();
+}
+
+function resetRandom(){
+    list = shuffle(questionList);
+    cur=0;okCnt=0;errCnt=0;
+    render();
+}
+
+function showWrong(){
+    if(wrongList.length===0){alert("错题本为空");return;}
+    list = [...wrongList];
+    cur=0;okCnt=0;errCnt=0;
+    render();
+}
+
+function collectWrong(){
+    const item = list[cur];
+    const has = wrongList.some(x=>x.qid===item.qid);
+    if(!has){
+        wrongList.push(item);
+        localStorage.setItem("wrongBookJudge",JSON.stringify(wrongList));
+        alert("已加入错题本");
+        document.getElementById("wrongCount").innerText = wrongList.length;
+    }else{
+        alert("本题已经在错题本");
+    }
+}
+
+function clearWrong(){
+    wrongList=[];
+    localStorage.removeItem("wrongBookJudge");
+    document.getElementById("wrongCount").innerText = 0;
+    alert("错题本已清空");
+}
+
+resetOrder();
+</script>
+</body>
+</html>
